@@ -3,6 +3,8 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import React from 'react';
 import { Controller, type Control } from 'react-hook-form';
 import Image from 'next/image';
+import { Input } from '@/components/ui/input';
+
 interface TextFieldComponentProps {
   label: string;
   type: string;
@@ -45,9 +47,9 @@ function TextFieldComponent({
           name={name}
           render={({ field }) => (
             <div className="relative block ">
-              {icon}
+              {/* {icon} */}
 
-              <input
+              <Input
                 {...field}
                 readOnly={disabled}
                 type={endIcon && showPassword ? 'string' : type}
@@ -55,13 +57,13 @@ function TextFieldComponent({
                 name={name}
                 placeholder={placeholder}
                 className={`${
-                  error ? 'border-red ' : 'border-grey-90'
+                  error ? 'border-red ' : 'border-black'
                 } !w-full appearance-none ${icon ? 'pl-[50px]' : ''}  ${
                   endIcon ? 'pr-[50px]' : ''
-                } rounded-[8px] text-white border-[1px] bg-bBlack-70 p-3 text-[16px]  font-[400]  outline-none placeholder:text-[14px] placeholder:text-[#7B7C7E]`}
+                } rounded-[8px] text-black border-[1px]  p-3 text-[16px]  font-[400]  outline-none placeholder:text-[14px] placeholder:text-[#7B7C7E]`}
               />
               {endIcon && (
-                <div className="absolute bottom-0 right-[3%] top-0 flex items-center">
+                <div className="absolute bottom-0 right-[3%] top-0 flex items-center cursor-pointer">
                   {showPassword ? (
                     <VisibilityOffIcon
                       style={{ color: '#7B7C7E' }}
