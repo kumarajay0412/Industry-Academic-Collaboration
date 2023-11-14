@@ -132,7 +132,7 @@ function Login() {
               </div>
             </div>
           </div>
-          <div className="relative flex h-full  w-full justify-center lg:w-[50%]">
+          <div className="relative  h-full  w-full justify-center lg:w-[50%] lg:flex hidden">
             <img
               src="/assets/banner.jpg"
               alt="login"

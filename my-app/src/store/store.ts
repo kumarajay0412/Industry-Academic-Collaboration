@@ -8,7 +8,6 @@ import {
 } from 'react-redux';
 
 import { auth } from './auth'; // Create an API slice (see step 3)
-import { organisationsApi } from './organisations';
 import StatusReducer from './toaster/slice';
 import userReducer from './userSlice'; // Import your userSlice
 
@@ -17,7 +16,6 @@ const store = configureStore({
     user: userReducer,
     toaster: StatusReducer,
     [auth.reducerPath]: auth.reducer,
-    [organisationsApi.reducerPath]: organisationsApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(auth.middleware),

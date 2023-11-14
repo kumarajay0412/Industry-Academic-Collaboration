@@ -29,13 +29,20 @@ export function RouteGuard({ children }: RouteGuardProps) {
       '/login',
       '/signup',
       '/forgot-password',
-      '/auth/confirm/[confirmToken]',
       '/auth/reset-password/[resetToken]',
+      '/auth/confirm/[confirmToken]',
+      // '/dashboard',
+      // '/invite-organisation',
+      // '/add-organisation',
+      // '/profile',
+      // '/verify-user',
     ];
     const path = url.split('?')[0];
-    console.log(path);
+    const getAcessToken = sessionStorage.getItem('accessToken');
+    const isAuthenticated = getAcessToken ? true : false;
+    console.log(isAuthenticated);
 
-    if (!publicPaths.includes(path)) {
+    if (!isAuthenticated && !publicPaths.includes(path)) {
       setAuthorized(false);
       router.push({
         pathname: '/login',

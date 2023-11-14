@@ -1,40 +1,72 @@
 import Link from 'next/link';
 
 import { cn } from '@/lib/utils';
+import { useUserDetailsQuery } from '@/store/auth';
 
 export function MainNav({
   className,
   ...props
 }: React.HTMLAttributes<HTMLElement>) {
+  const { data } = useUserDetailsQuery({});
+  console.log(data);
   return (
     <nav
       className={cn('flex items-center space-x-4 lg:space-x-6', className)}
       {...props}
     >
       <Link
-        href="/examples/dashboard"
+        href="/dashboard"
         className="text-sm font-medium transition-colors hover:text-bBlack-60"
       >
         Collaboration Hub{' '}
       </Link>
       <Link
-        href="/examples/dashboard"
+        href="/project-proposal"
         className="text-sm font-medium transition-colors hover:text-bBlack-60"
       >
         Project Proposal
       </Link>
-      <Link
-        href="/examples/dashboard"
-        className="text-sm font-medium transition-colors hover:text-bBlack-60"
-      >
-        Heading 3
-      </Link>
-      <Link
-        href="/examples/dashboard"
-        className="text-sm font-medium transition-colors hover:text-bBlack-60"
-      >
-        Heading 4
-      </Link>
+      {data?.role === 'ADMIN' && (
+        <Link
+          href="/invite-organisation"
+          className="text-sm font-medium transition-colors hover:text-bBlack-60"
+        >
+          Invite Organisation
+        </Link>
+      )}
+      {data?.role === 'ADMIN' && (
+        <Link
+          href="/add-organisation"
+          className="text-sm font-medium transition-colors hover:text-bBlack-60"
+        >
+          Add Organisation
+        </Link>
+      )}
+      {data?.role === 'ADMIN' && (
+        <Link
+          href="/add-area-of-interest"
+          className="text-sm font-medium transition-colors hover:text-bBlack-60"
+        >
+          Add Area of Interest
+        </Link>
+      )}
+      {data?.role === 'INDUSTRY_REP' && (
+        <Link
+          href="/verify-user"
+          className="text-sm font-medium transition-colors hover:text-bBlack-60"
+        >
+          Verify User
+        </Link>
+      )}
+
+      {data?.role === 'ACADEMIC_REP' && (
+        <Link
+          href="/verify-user"
+          className="text-sm font-medium transition-colors hover:text-bBlack-60"
+        >
+          Verify User
+        </Link>
+      )}
     </nav>
   );
 }

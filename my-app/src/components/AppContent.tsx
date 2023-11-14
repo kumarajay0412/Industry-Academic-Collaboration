@@ -21,7 +21,6 @@ export default function AppContent() {
     }
   }, [toasterStatus]);
 
-  console.log(toasterStatus);
   return (
     <RouteGuard>
       <Portal>

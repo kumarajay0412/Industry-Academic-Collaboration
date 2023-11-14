@@ -21,15 +21,21 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import {
   useGetAcademicOrganisationQuery,
   useGetIndustryOrganisationQuery,
-} from '@/store/organisations';
+} from '@/store/auth';
 import Select from 'react-select';
 import { transparent } from 'tailwindcss/colors';
-import { error } from 'console';
+import { useSignUpMutation } from '@/store/auth';
+import { useDispatch } from '@/store/store';
+import { setStatus } from '@/store/toaster/slice';
+import { CircularProgress } from '@mui/material';
 
 function Login() {
   const [keepSignedIn, setKeepSignedIn] = useState(true);
   const { data: AcademicOrganisations } = useGetAcademicOrganisationQuery({});
   const { data: IndustryOrganisations } = useGetIndustryOrganisationQuery({});
+  const [signUp, { isLoading }] = useSignUpMutation();
+  const dispatch = useDispatch();
+
   const [loading, setLoading] = useState(false);
   const handleCheckbox = () => {
     setKeepSignedIn((prev) => !prev);
@@ -63,19 +69,48 @@ function Login() {
 
   const handleGoogleLogin = () => {};
   const watchRole = form.watch('role');
-  const onSubmit = async (data: {
-    email: string;
-    password: string;
-    confirmPassword: string;
-    firstName: string;
-    lastName: string;
-    role: string;
-    orgId: any;
-  }) => {
-    console.log(data);
+  const onSubmit = async (data: any) => {
+    const credentials = {
+      email: data.email,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      orgId: data.orgId.value,
+      password: data.password,
+      password1: data.confirmPassword,
+      isEmailVerified: true,
+      role: data.role,
+      isVerified: true,
+    };
+    try {
+      const response = await signUp(credentials).unwrap();
+      if (response?.error) {
+        dispatch(
+          setStatus({
+            type: 'error',
+            message:
+              response?.error?.data?.message || 'Request Failed Pls Try Again',
+            timeout: 4000,
+          })
+        );
+      } else {
+        dispatch(
+          setStatus({
+            type: 'success',
+            message: 'Sign Up Successful please verify your email',
+            timeout: 4000,
+          })
+        );
+      }
+    } catch (err) {
+      dispatch(
+        setStatus({
+          type: 'error',
+          message: 'Request Failed Pls Try Again',
+          timeout: 4000,
+        })
+      );
+    }
   };
-
-  console.log(form?.formState?.errors);
 
   return (
     <>
@@ -201,7 +236,7 @@ function Login() {
                           >
                             <FormItem className="flex items-center space-x-3 space-y-0">
                               <FormControl>
-                                <RadioGroupItem value="INDUSTRY_USER" />
+                                <RadioGroupItem value="INDUSTRY_REP" />
                               </FormControl>
                               <FormLabel className="font-normal">
                                 Industry User
@@ -209,7 +244,7 @@ function Login() {
                             </FormItem>
                             <FormItem className="flex items-center space-x-3 space-y-0">
                               <FormControl>
-                                <RadioGroupItem value="ACADEMIC_USER" />
+                                <RadioGroupItem value="ACADEMIC_REP" />
                               </FormControl>
                               <FormLabel className="font-normal">
                                 Academic User
@@ -235,7 +270,7 @@ function Login() {
                           }
                           maxMenuHeight={150}
                           options={
-                            watchRole === 'ACADEMIC_USER'
+                            watchRole === 'ACADEMIC_REP'
                               ? AcademicOrganisations?.map(
                                   (item: { id: any; name: any }) => ({
                                     value: item.id,
@@ -283,12 +318,12 @@ function Login() {
                     variant="secondary"
                   >
                     Sign Up
-                    {/* {isLoading && (
+                    {isLoading && (
                       <CircularProgress
                         size={16}
                         style={{ color: '#333333' }}
                       />
-                    )} */}
+                    )}
                   </Button>
                 </Form>
                 <div className="flex gap-2">

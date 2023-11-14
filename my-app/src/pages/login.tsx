@@ -13,9 +13,11 @@ import { useLoginMutation } from '@/store/auth';
 import { CircularProgress } from '@mui/material';
 import { useDispatch, useSelector } from '@/store/store';
 import { setStatus } from '@/store/toaster/slice';
+import { useRouter } from 'next/router';
 
 function Login() {
   const dispatch = useDispatch();
+  const router = useRouter();
   const toasterStatus = useSelector((state) => state.toaster);
   const [keepSignedIn, setKeepSignedIn] = useState(true);
   const [login, { isLoading }] = useLoginMutation();
@@ -65,6 +67,8 @@ function Login() {
             timeout: 4000,
           })
         );
+        sessionStorage.setItem('accessToken', response?.accessToken);
+        router.push('/dashboard');
       }
     } catch (err) {
       dispatch(
@@ -195,7 +199,7 @@ function Login() {
               </div>
             </div>
           </div>
-          <div className="relative flex h-full  w-full justify-center lg:w-[50%]">
+          <div className="relative  h-full  w-full justify-center lg:w-[50%] lg:flex hidden">
             <img
               src="/assets/banner.jpg"
               alt="login"
