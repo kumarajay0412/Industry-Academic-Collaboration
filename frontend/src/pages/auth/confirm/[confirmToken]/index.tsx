@@ -5,7 +5,7 @@ import { CircularProgress } from '@mui/material';
 import React, { useEffect } from 'react';
 import { setStatus } from '@/store/toaster/slice';
 
-function index() {
+function Index() {
   const [confirmEmail, { isLoading, isError, isSuccess }] =
     useConfirmEmailMutation();
   const dispatch = useDispatch();
@@ -103,4 +103,4 @@ function index() {
   );
 }
 
-export default index;
+export default Index;
