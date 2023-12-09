@@ -13,7 +13,7 @@ import * as yup from 'yup';
 import { setStatus } from '@/store/toaster/slice';
 import { useRouter } from 'next/router';
 
-function index() {
+function Index() {
   const [resetPassword, { isLoading, isError }] = useResetPasswordMutation();
   const validationSchema = yup.object().shape({
     password: yup.string().required('Password is required'),
@@ -182,4 +182,4 @@ function index() {
   );
 }
 
-export default index;
+export default Index;
