@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/return-await */
 // api.js
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { Type } from 'lucide-react';

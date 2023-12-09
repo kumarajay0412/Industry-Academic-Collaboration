@@ -190,7 +190,7 @@ function Login() {
                 </form>
                 <div className="flex gap-2">
                   <div className=" text-subTitle1   text-grey-50">
-                    Don't have an account?
+                    Don&apos;t have an account?
                   </div>
                   <div className="cursor-pointer  text-[#4E6BFF]">
                     <Link href="/signup">Sign up now.</Link>
