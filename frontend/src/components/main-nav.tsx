@@ -28,14 +28,6 @@ export function MainNav({
       </Link>
       {data?.role === 'ADMIN' && (
         <Link
-          href="/invite-organisation"
-          className="text-sm font-medium transition-colors hover:text-bBlack-60"
-        >
-          Invite Organisation
-        </Link>
-      )}
-      {data?.role === 'ADMIN' && (
-        <Link
           href="/add-organisation"
           className="text-sm font-medium transition-colors hover:text-bBlack-60"
         >
@@ -50,21 +42,21 @@ export function MainNav({
           Add Area of Interest
         </Link>
       )}
-      {data?.role === 'INDUSTRY_REP' && (
+      {/* {data?.role === 'INDUSTRY_REP' && (
         <Link
           href="/verify-user"
           className="text-sm font-medium transition-colors hover:text-bBlack-60"
         >
           Verify User
         </Link>
-      )}
+      )} */}
 
       {data?.role === 'ACADEMIC_REP' && (
         <Link
-          href="/verify-user"
+          href="/create-supervise"
           className="text-sm font-medium transition-colors hover:text-bBlack-60"
         >
-          Verify User
+          Add User
         </Link>
       )}
     </nav>

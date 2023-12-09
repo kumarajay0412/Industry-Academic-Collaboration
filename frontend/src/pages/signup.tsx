@@ -20,7 +20,9 @@ import {
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import {
   useGetAcademicOrganisationQuery,
+  useGetAreaOfInterestQuery,
   useGetIndustryOrganisationQuery,
+  useGetOrganisationQuery,
 } from '@/store/auth';
 import Select from 'react-select';
 import { transparent } from 'tailwindcss/colors';
@@ -29,10 +31,13 @@ import { useDispatch } from '@/store/store';
 import { setStatus } from '@/store/toaster/slice';
 import { CircularProgress } from '@mui/material';
 
+const otherOption = { value: 99999999999999, label: 'Other' };
+const araofinterestotheroption = { value: 99999999999999, label: 'Other' };
+
 function Login() {
   const [keepSignedIn, setKeepSignedIn] = useState(true);
-  const { data: AcademicOrganisations } = useGetAcademicOrganisationQuery({});
-  const { data: IndustryOrganisations } = useGetIndustryOrganisationQuery({});
+  const [orgName, setOrgName] = useState('');
+
   const [signUp, { isLoading }] = useSignUpMutation();
   const dispatch = useDispatch();
 
@@ -62,6 +67,7 @@ function Login() {
       .required('Confirm Password is required'),
     role: yup.string().required('Role is required'),
     orgId: yup.object().required('Organisation is required'),
+    areaOfInterest: yup.array().required('Area of Interest is required'),
   });
   const form = useForm({
     resolver: yupResolver(validationSchema),
@@ -69,6 +75,12 @@ function Login() {
 
   const handleGoogleLogin = () => {};
   const watchRole = form.watch('role');
+  const { data: organisations } = useGetOrganisationQuery({
+    name: orgName,
+    type: watchRole || '',
+  });
+  const { data: areaOfInterestData } = useGetAreaOfInterestQuery({});
+
   const onSubmit = async (data: any) => {
     const credentials = {
       email: data.email,
@@ -78,8 +90,10 @@ function Login() {
       password: data.password,
       password1: data.confirmPassword,
       isEmailVerified: true,
-      role: data.role,
+      role: data.role === 'INDUSTRY' ? 'INDUSTRY_REP' : 'ACADEMIC_REP',
       isVerified: true,
+      areasofInterest: data.areaOfInterest.map((area: any) => area.value),
+      isPoc: true,
     };
     try {
       const response = await signUp(credentials).unwrap();
@@ -111,6 +125,20 @@ function Login() {
       );
     }
   };
+  const selectOptionsOrganisations =
+    organisations && organisations.length > 0
+      ? organisations
+          .map((org: any) => ({
+            value: org.id, // Assuming you have an 'id' field
+            label: org.name,
+          }))
+          .concat(otherOption)
+      : [otherOption];
+
+  const selectOptionsAreaOfInterest = areaOfInterestData?.map((data: any) => ({
+    value: data.id, // Assuming you have an 'id' field
+    label: data.title,
+  }));
 
   return (
     <>
@@ -166,7 +194,7 @@ function Login() {
                     }
                   />
                   <TextFieldComponent
-                    label="Email Address"
+                    label="Official Email Address"
                     type="string"
                     name="email"
                     placeholder="Enter email"
@@ -236,18 +264,18 @@ function Login() {
                           >
                             <FormItem className="flex items-center space-x-3 space-y-0">
                               <FormControl>
-                                <RadioGroupItem value="INDUSTRY_REP" />
+                                <RadioGroupItem value="INDUSTRY" />
                               </FormControl>
                               <FormLabel className="font-normal">
-                                Industry User
+                                Industry
                               </FormLabel>
                             </FormItem>
                             <FormItem className="flex items-center space-x-3 space-y-0">
                               <FormControl>
-                                <RadioGroupItem value="ACADEMIC_REP" />
+                                <RadioGroupItem value="ACADEMIC" />
                               </FormControl>
                               <FormLabel className="font-normal">
-                                Academic User
+                                Academic
                               </FormLabel>
                             </FormItem>
                           </RadioGroup>
@@ -265,25 +293,38 @@ function Login() {
                         <FormLabel>Organisation</FormLabel>
                         <Select
                           {...field}
+                          onInputChange={(value) =>
+                            setOrgName(value) as unknown as void
+                          }
                           onChange={
                             field.onChange as unknown as (value: any) => void
                           }
                           maxMenuHeight={150}
-                          options={
-                            watchRole === 'ACADEMIC_REP'
-                              ? AcademicOrganisations?.map(
-                                  (item: { id: any; name: any }) => ({
-                                    value: item.id,
-                                    label: item.name,
-                                  })
-                                )
-                              : IndustryOrganisations?.map(
-                                  (item: { id: any; name: any }) => ({
-                                    value: item.id,
-                                    label: item.name,
-                                  })
-                                )
+                          options={selectOptionsOrganisations}
+                          className="!w-full"
+                        />
+                        <FormMessage />
+                      </div>
+                    )}
+                  />
+
+                  <Controller
+                    control={form.control}
+                    name="areaOfInterest"
+                    render={({ field }) => (
+                      <div className="space-y-3">
+                        <FormLabel>Area of Interest</FormLabel>
+                        <Select
+                          {...field}
+                          // onInputChange={(value) =>
+                          //   setOrgName(value) as unknown as void
+                          // }
+                          onChange={
+                            field.onChange as unknown as (value: any) => void
                           }
+                          isMulti
+                          maxMenuHeight={150}
+                          options={selectOptionsAreaOfInterest}
                           className="!w-full"
                         />
                         <FormMessage />
@@ -306,10 +347,12 @@ function Login() {
                         )}
                       </button>
                       <span className="text-body2 text-grey-50">
-                        I agree to the Terms & Conditions
+                        I agree to the Terms & Conditions and you are approved
+                        by your organisation to sign up.
                       </span>
                     </div>
                   </div>
+
                   <Button
                     className="!w-full normal-case flex gap-4"
                     onClick={form.handleSubmit(onSubmit)}

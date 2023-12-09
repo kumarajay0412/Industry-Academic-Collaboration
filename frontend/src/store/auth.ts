@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/return-await */
 // api.js
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { Type } from 'lucide-react';
 
 const baseUrl = 'http://localhost:5001'; // Define your base URL
 const getAccessToken = () => {
@@ -44,6 +45,14 @@ export const auth = createApi({
     confirmEmail: builder.mutation({
       query: (data) => ({
         url: '/auth/confirmEmail',
+        method: 'POST',
+        body: data,
+        responseHandler: async (response) => response.text(),
+      }),
+    }),
+    createSupervise: builder.mutation({
+      query: (data) => ({
+        url: '/users/create_supervisee',
         method: 'POST',
         body: data,
         responseHandler: async (response) => response.text(),
@@ -123,8 +132,28 @@ export const auth = createApi({
     }),
     getAreaOfInterest: builder.query({
       query: () => ({
-        url: '/area-of-interest',
+        url: `/area-of-interest`,
         method: 'GET',
+      }),
+    }),
+    getOrganisation: builder.query({
+      query: ({ name, type }) => ({
+        url: `/organisations?type=${type}&searchQuery=${name}`,
+        method: 'GET',
+      }),
+    }),
+    getUsers: builder.query({
+      query: ({ query, type }) => ({
+        url: `/users?role=${type}&searchQuery=${query}`,
+        method: 'GET',
+      }),
+    }),
+    addSupervisee: builder.mutation({
+      query: (data) => ({
+        url: '/users/add_supervisees',
+        method: 'POST',
+        body: data,
+        responseHandler: async (response) => response.text(),
       }),
     }),
   }),
@@ -149,4 +178,8 @@ export const {
   useVerifyMembersMutation,
   useAddAreaOfInterestMutation,
   useGetAreaOfInterestQuery,
+  useGetOrganisationQuery,
+  useCreateSuperviseMutation,
+  useGetUsersQuery,
+  useAddSuperviseeMutation,
 } = auth as AuthApi;
