@@ -31,7 +31,7 @@ function Dashboard() {
       <div className=" grid grid-cols-3 gap-4 mt-4 p-4">
         {data?.map((item: any) => {
           return (
-            <Card>
+            <Card key={item?.userId}>
               <CardHeader>
                 <CardTitle>{item?.firstName + ' ' + item?.lastName}</CardTitle>
                 <CardDescription>email : {item?.email}</CardDescription>
