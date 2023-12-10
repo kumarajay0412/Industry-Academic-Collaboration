@@ -1,11 +1,11 @@
 // api.js
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { Type } from 'lucide-react';
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { Type } from "lucide-react";
 
-const baseUrl = 'https://industry-academic-collaboration-backend.onrender.com'; // Define your base URL
+const baseUrl = "http://localhost:5000"; // Define your base URL
 const getAccessToken = () => {
-  const accessToken = sessionStorage.getItem('accessToken');
-  return accessToken ? `Bearer ${accessToken}` : '';
+  const accessToken = sessionStorage.getItem("accessToken");
+  return accessToken ? `Bearer ${accessToken}` : "";
 };
 export const auth = createApi({
   baseQuery: fetchBaseQuery({
@@ -13,78 +13,78 @@ export const auth = createApi({
     prepareHeaders(headers) {
       const accessToken = getAccessToken();
       if (accessToken) {
-        headers.set('Authorization', accessToken);
+        headers.set("Authorization", accessToken);
       }
       return headers;
     },
-    credentials: 'include',
+    credentials: "include",
   }),
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (credentials) => ({
-        url: '/auth/login',
-        method: 'POST',
+        url: "/auth/login",
+        method: "POST",
         body: credentials,
       }),
     }),
     userDetails: builder.query({
       query: () => ({
-        url: '/users/details',
-        method: 'GET',
+        url: "/users/details",
+        method: "GET",
       }),
     }),
     forgotPassword: builder.mutation({
       query: (email) => ({
-        url: '/auth/sendResetPasswordEmail',
-        method: 'POST',
+        url: "/auth/sendResetPasswordEmail",
+        method: "POST",
         body: email,
         responseHandler: async (response) => response.text(),
       }),
     }),
     confirmEmail: builder.mutation({
       query: (data) => ({
-        url: '/auth/confirmEmail',
-        method: 'POST',
+        url: "/auth/confirmEmail",
+        method: "POST",
         body: data,
         responseHandler: async (response) => response.text(),
       }),
     }),
     createSupervise: builder.mutation({
       query: (data) => ({
-        url: '/users/create_supervisee',
-        method: 'POST',
+        url: "/users/create_supervisee",
+        method: "POST",
         body: data,
         responseHandler: async (response) => response.text(),
       }),
     }),
     resetPassword: builder.mutation({
       query: (data) => ({
-        url: '/auth/resetPassword',
-        method: 'POST',
+        url: "/auth/resetPassword",
+        method: "POST",
         body: data,
         responseHandler: async (response) => response.text(),
       }),
     }),
     setOrgRep: builder.mutation({
       query: (data) => ({
-        url: '/users/org_rep',
-        method: 'POST',
+        url: "/users/org_rep",
+        method: "POST",
         body: data,
         responseHandler: async (response) => response.text(),
       }),
     }),
     signUp: builder.mutation({
       query: (data) => ({
-        url: '/users',
-        method: 'POST',
+        url: "/users",
+        method: "POST",
         body: data,
         responseHandler: async (response) => response.text(),
       }),
     }),
     addOrganisation: builder.mutation({
       query: (data) => ({
-        url: '/organisations',
-        method: 'POST',
+        url: "/organisations",
+        method: "POST",
         body: data,
         responseHandler: async (response) => response.text(),
       }),
@@ -92,39 +92,39 @@ export const auth = createApi({
     verifyMembers: builder.mutation({
       query: ({ data, id }) => ({
         url: `/organisations/verify_members/${id}`,
-        method: 'POST',
+        method: "POST",
         body: data,
         responseHandler: async (response) => response.text(),
       }),
     }),
     getAcademicOrganisation: builder.query({
       query: () => ({
-        url: '/organisations/academic',
-        method: 'GET',
+        url: "/organisations/academic",
+        method: "GET",
       }),
     }),
     getIndustryOrganisation: builder.query({
       query: () => ({
-        url: '/organisations/industry',
-        method: 'GET',
+        url: "/organisations/industry",
+        method: "GET",
       }),
     }),
     unverifiedUsers: builder.query({
       query: (id) => ({
         url: `/organisations/members/unverified/${id}`,
-        method: 'GET',
+        method: "GET",
       }),
     }),
     verifiedUsers: builder.query({
       query: (id) => ({
         url: `/organisations/members/verified/${id}`,
-        method: 'GET',
+        method: "GET",
       }),
     }),
     addAreaOfInterest: builder.mutation({
       query: (data) => ({
-        url: '/area-of-interest',
-        method: 'POST',
+        url: "/area-of-interest",
+        method: "POST",
         body: data,
         responseHandler: async (response) => response.text(),
       }),
@@ -132,27 +132,27 @@ export const auth = createApi({
     getAreaOfInterest: builder.query({
       query: () => ({
         url: `/area-of-interest`,
-        method: 'GET',
+        method: "GET",
       }),
     }),
     getOrganisation: builder.query({
       query: ({ name, type }) => ({
         url: `/organisations?type=${type}&searchQuery=${name}`,
-        method: 'GET',
+        method: "GET",
       }),
     }),
     getUsers: builder.mutation({
       query: ({ query, type, data }) => ({
         url: `/users/search_users?role=${type}&searchQuery=${query}`,
-        method: 'POST',
+        method: "POST",
         body: { areasOfInterest: data },
         responseHandler: async (response) => response.text(),
       }),
     }),
     addSupervisee: builder.mutation({
       query: (data) => ({
-        url: '/users/add_supervisees',
-        method: 'POST',
+        url: "/users/add_supervisees",
+        method: "POST",
         body: data,
         responseHandler: async (response) => response.text(),
       }),
@@ -160,7 +160,7 @@ export const auth = createApi({
     makeRepresentative: builder.mutation({
       query: (data: any) => ({
         url: `/users/make_representative`,
-        method: 'POST',
+        method: "POST",
         body: data,
         responseHandler: async (response) => response.text(),
       }),
@@ -168,7 +168,7 @@ export const auth = createApi({
     verifyUsers: builder.mutation({
       query: (data: any) => ({
         url: `/users/verify_user`,
-        method: 'POST',
+        method: "POST",
         body: data,
         responseHandler: async (response) => response.text(),
       }),
@@ -176,7 +176,7 @@ export const auth = createApi({
     inviteUser: builder.mutation({
       query: (data: any) => ({
         url: `/users/invite`,
-        method: 'POST',
+        method: "POST",
         body: data,
         responseHandler: async (response) => response.text(),
       }),
@@ -184,7 +184,7 @@ export const auth = createApi({
     editProfile: builder.mutation({
       query: ({ id, data }) => ({
         url: `/users/${id}`,
-        method: 'PATCH',
+        method: "PATCH",
         body: data,
         responseHandler: async (response) => response.text(),
       }),
@@ -192,7 +192,7 @@ export const auth = createApi({
     createDraftProject: builder.mutation({
       query: (data) => ({
         url: `/project/createDraft`,
-        method: 'POST',
+        method: "POST",
         body: data,
         responseHandler: async (response) => response.text(),
       }),
@@ -200,7 +200,7 @@ export const auth = createApi({
     sendVerificationProject: builder.mutation({
       query: (data) => ({
         url: `/project/sendVerificationRequest`,
-        method: 'POST',
+        method: "POST",
         body: data,
         responseHandler: async (response) => response.text(),
       }),
@@ -208,7 +208,7 @@ export const auth = createApi({
     projectVerify: builder.mutation({
       query: (data) => ({
         url: `/project/verify`,
-        method: 'POST',
+        method: "POST",
         body: data,
         responseHandler: async (response) => response.text(),
       }),
@@ -216,7 +216,13 @@ export const auth = createApi({
     potentialCollaborators: builder.query({
       query: ({ id }) => ({
         url: `/users/potential_collaborators/${id}`,
-        method: 'GET',
+        method: "GET",
+      }),
+    }),
+    getProject: builder.query({
+      query: (id) => ({
+        url: `/project/${id}`,
+        method: "GET",
       }),
     }),
   }),
@@ -252,4 +258,5 @@ export const {
   useSendVerificationProjectMutation,
   useProjectVerifyMutation,
   usePotentialCollaboratorsQuery,
+  useGetProjectQuery,
 } = auth as AuthApi;

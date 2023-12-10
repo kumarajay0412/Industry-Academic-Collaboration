@@ -1,14 +1,14 @@
-'use client';
-import { yupResolver } from '@hookform/resolvers/yup';
-import Link from 'next/link';
-import React, { useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import * as yup from 'yup';
+"use client";
+import { yupResolver } from "@hookform/resolvers/yup";
+import Link from "next/link";
+import React, { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import * as yup from "yup";
 
-import Image from 'next/image';
-import { Button } from '@/components/ui/button';
-import TextFieldComponent from '@/components/TextFieldComponent/TextFieldComponent';
-import CheckboxIcon, { CheckboxTypes } from '@/components/icons/CheckboxIcon';
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import TextFieldComponent from "@/components/TextFieldComponent/TextFieldComponent";
+import CheckboxIcon, { CheckboxTypes } from "@/components/icons/CheckboxIcon";
 import {
   Form,
   FormControl,
@@ -16,30 +16,30 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+} from "@/components/ui/form";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   useGetAcademicOrganisationQuery,
   useGetAreaOfInterestQuery,
   useGetIndustryOrganisationQuery,
   useGetOrganisationQuery,
   useInviteUserMutation,
-} from '@/store/auth';
-import Select from 'react-select';
-import { transparent } from 'tailwindcss/colors';
-import { useSignUpMutation } from '@/store/auth';
-import { useDispatch } from '@/store/store';
-import { setStatus } from '@/store/toaster/slice';
-import { CircularProgress } from '@mui/material';
-import Header from '@/components/Header';
-import { Separator } from '@/components/ui/separator';
+} from "@/store/auth";
+import Select from "react-select";
+import { transparent } from "tailwindcss/colors";
+import { useSignUpMutation } from "@/store/auth";
+import { useDispatch } from "@/store/store";
+import { setStatus } from "@/store/toaster/slice";
+import { CircularProgress } from "@mui/material";
+import Header from "@/components/Header";
+import { Separator } from "@/components/ui/separator";
 
-const otherOption = { value: 99999999999999, label: 'Other' };
-const araofinterestotheroption = { value: 99999999999999, label: 'Other' };
+const otherOption = { value: 99999, label: "Other" };
+const araofinterestotheroption = { value: 99999, label: "Other" };
 
 function Login() {
   const [keepSignedIn, setKeepSignedIn] = useState(true);
-  const [orgName, setOrgName] = useState('');
+  const [orgName, setOrgName] = useState("");
 
   const [inviteUser, { isLoading }] = useInviteUserMutation();
   const dispatch = useDispatch();
@@ -52,12 +52,12 @@ function Login() {
   const validationSchema = yup.object().shape({
     email: yup
       .string()
-      .email('Please enter a valid email')
-      .required('Email is required'),
-    firstName: yup.string().required('First Name is required'),
-    lastName: yup.string().required('Last Name is required'),
-    role: yup.string().required('Role is required'),
-    orgId: yup.object().required('Organisation is required'),
+      .email("Please enter a valid email")
+      .required("Email is required"),
+    firstName: yup.string().required("First Name is required"),
+    lastName: yup.string().required("Last Name is required"),
+    role: yup.string().required("Role is required"),
+    orgId: yup.object().required("Organisation is required"),
     // areaOfInterest: yup.array().required('Area of Interest is required'),
   });
   const form = useForm({
@@ -65,10 +65,10 @@ function Login() {
   });
 
   const handleGoogleLogin = () => {};
-  const watchRole = form.watch('role');
+  const watchRole = form.watch("role");
   const { data: organisations } = useGetOrganisationQuery({
     name: orgName,
-    type: watchRole || '',
+    type: watchRole || "",
   });
   const { data: areaOfInterestData } = useGetAreaOfInterestQuery({});
 
@@ -80,7 +80,7 @@ function Login() {
       firstName: data.firstName,
       lastName: data.lastName,
       orgId: data.orgId.value,
-      role: data.role === 'INDUSTRY' ? 'INDUSTRY_REP' : 'ACADEMIC_REP',
+      role: data.role === "INDUSTRY" ? "INDUSTRY_REP" : "ACADEMIC_REP",
       isVerified: true,
       isEmailVerified: true,
 
@@ -91,17 +91,17 @@ function Login() {
       if (response?.error) {
         dispatch(
           setStatus({
-            type: 'error',
+            type: "error",
             message:
-              response?.error?.data?.message || 'Request Failed Pls Try Again',
+              response?.error?.data?.message || "Request Failed Pls Try Again",
             timeout: 4000,
           })
         );
       } else {
         dispatch(
           setStatus({
-            type: 'success',
-            message: 'User Invited Successful',
+            type: "success",
+            message: "User Invited Successful",
             timeout: 4000,
           })
         );
@@ -109,8 +109,8 @@ function Login() {
     } catch (err) {
       dispatch(
         setStatus({
-          type: 'error',
-          message: 'Request Failed Pls Try Again',
+          type: "error",
+          message: "Request Failed Pls Try Again",
           timeout: 4000,
         })
       );
@@ -301,7 +301,7 @@ function Login() {
                         {isLoading && (
                           <CircularProgress
                             size={16}
-                            style={{ color: '#333333' }}
+                            style={{ color: "#333333" }}
                           />
                         )}
                       </Button>
