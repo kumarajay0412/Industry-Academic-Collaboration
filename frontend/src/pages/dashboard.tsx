@@ -18,11 +18,12 @@ import {
 } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/router';
 function Dashboard() {
   const { data: user } = useUserDetailsQuery({});
   const { data } = usePotentialCollaboratorsQuery({ id: user?.userId });
   const { data: projectList } = useGetProjectListQuery({});
-
+  const router = useRouter();
   return (
     <div>
       <Header />
@@ -47,7 +48,14 @@ function Dashboard() {
                       Academic Organisation : {item?.academicOrg?.name}
                     </CardDescription>
                     <CardDescription>
-                      <Button variant="destructive">View Project</Button>
+                      <Button
+                        onClick={() => {
+                          router.push(`/project/${item?.id}`);
+                        }}
+                        variant="destructive"
+                      >
+                        View Project
+                      </Button>
                     </CardDescription>
                   </CardHeader>
                 </Card>
