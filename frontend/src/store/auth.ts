@@ -225,6 +225,14 @@ export const auth = createApi({
         method: "GET",
       }),
     }),
+    editProject: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/project/${id}`,
+        method: "PATCH",
+        body: data,
+        responseHandler: async (response) => response.text(),
+      }),
+    }),
   }),
 });
 

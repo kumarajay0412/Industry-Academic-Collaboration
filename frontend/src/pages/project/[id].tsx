@@ -7,6 +7,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
@@ -14,6 +25,7 @@ import { useGetProjectQuery } from "@/store/auth";
 import { Skeleton } from "@mui/material";
 import { useRouter } from "next/router";
 import React from "react";
+import { Button } from "@/components/ui/button";
 
 function Project() {
   const router = useRouter();
@@ -43,7 +55,32 @@ function Project() {
           </>
         ) : (
           <>
-            <div className="text-heading2 text-black">{projectData.title}</div>
+            <div className=" flex w-full justify-between">
+              <span className="text-heading2 text-black">
+                {projectData.title}
+              </span>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline">Add Update</Button>
+                </DialogTrigger>
+                <DialogContent className="w-[50vw]">
+                  <DialogHeader>
+                    <DialogTitle>Add Progress Update</DialogTitle>
+                    <DialogDescription>
+                      Maintain your project progress by adding updates here
+                    </DialogDescription>
+                  </DialogHeader>
+
+                  <div className="flex flex-col">
+                    <Textarea placeholder="Text goes here" rows={5} />
+                  </div>
+
+                  <DialogFooter>
+                    <Button type="submit">Save changes</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
             {projectData.startDate && (
               <div className="text-heading5 text-black mt-2">{`Start Date: ${projectData.startDate} - End Date: ${projectData.endDate}`}</div>
             )}
