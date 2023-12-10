@@ -25,6 +25,7 @@ import { CircularProgress } from '@mui/material';
 import Header from '@/components/Header';
 import { Separator } from '@/components/ui/separator';
 import SearchUsers from '@/molecules/SearchUsers';
+import SearchUsersStudents from '@/molecules/SearchUsersStudents';
 function CreateSupervise() {
   const validationSchema = yup.object().shape({
     email: yup
@@ -162,8 +163,8 @@ function CreateSupervise() {
               </Button>
             </Form>
           </div>
-          <SearchUsers />
         </div>
+        <SearchUsersStudents />
       </div>
     </div>
   );

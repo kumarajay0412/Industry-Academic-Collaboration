@@ -42,21 +42,51 @@ export function MainNav({
           Add Area of Interest
         </Link>
       )}
-      {/* {data?.role === 'INDUSTRY_REP' && (
+      {data?.role === 'ADMIN' && (
         <Link
           href="/verify-user"
           className="text-sm font-medium transition-colors hover:text-bBlack-60"
         >
           Verify User
         </Link>
-      )} */}
+      )}
+      {data?.role === 'ADMIN' && (
+        <Link
+          href="/make-representive"
+          className="text-sm font-medium transition-colors hover:text-bBlack-60"
+        >
+          Make Representative
+        </Link>
+      )}
 
-      {data?.role === 'ACADEMIC_REP' && (
+      {(data?.role === 'ACADEMIC_REP' || data?.role === 'ACADEMIC_USER') && (
         <Link
           href="/create-supervise"
           className="text-sm font-medium transition-colors hover:text-bBlack-60"
         >
-          Add User
+          Add Students
+        </Link>
+      )}
+      {(data?.role === 'ACADEMIC_REP' ||
+        data?.role === 'ACADEMIC_USER' ||
+        data?.role === 'INDUSTRY_USER' ||
+        data?.role === 'INDUSTRY_REP') && (
+        <Link
+          href="/search-users"
+          className="text-sm font-medium transition-colors hover:text-bBlack-60"
+        >
+          Search Users
+        </Link>
+      )}
+      {(data?.role === 'ACADEMIC_REP' ||
+        data?.role === 'ACADEMIC_USER' ||
+        data?.role === 'INDUSTRY_USER' ||
+        data?.role === 'INDUSTRY_REP') && (
+        <Link
+          href="/add-user"
+          className="text-sm font-medium transition-colors hover:text-bBlack-60"
+        >
+          Add Users
         </Link>
       )}
     </nav>

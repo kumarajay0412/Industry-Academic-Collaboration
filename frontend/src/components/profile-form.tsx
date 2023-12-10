@@ -32,14 +32,27 @@ export function ProfileForm() {
       </div>
       <div>
         <Label htmlFor="terms">Email</Label>
-        <div className="  text-lg">{data?.email}</div>
+        <div className="  text-lg">
+          {data?.email === null ? 'NA' : data?.email}
+        </div>
       </div>
 
+      <div>
+        <Label htmlFor="terms">Website</Label>
+        <div className="  text-lg">
+          {data?.website === null ? 'NA' : data?.website}
+        </div>
+      </div>
+      <div>
+        <Label htmlFor="terms">Department</Label>
+        <div className="  text-lg">
+          {data?.department === null ? 'NA' : data?.department}
+        </div>
+      </div>
       <div>
         <Label htmlFor="terms">Organization</Label>
         <div className="  text-lg">{data?.organization?.name}</div>
       </div>
-
       <div>
         <Label htmlFor="terms">Organization Location</Label>
         <div className="  text-lg">{data?.organization?.location}</div>

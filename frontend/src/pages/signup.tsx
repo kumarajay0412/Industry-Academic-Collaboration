@@ -68,6 +68,8 @@ function Login() {
     role: yup.string().required('Role is required'),
     orgId: yup.object().required('Organisation is required'),
     areaOfInterest: yup.array().required('Area of Interest is required'),
+    website: yup.string().required('Website is required'),
+    department: yup.string().required('Department is required'),
   });
   const form = useForm({
     resolver: yupResolver(validationSchema),
@@ -82,6 +84,7 @@ function Login() {
   const { data: areaOfInterestData } = useGetAreaOfInterestQuery({});
 
   const onSubmit = async (data: any) => {
+    console.log(data);
     const credentials = {
       email: data.email,
       firstName: data.firstName,
@@ -94,6 +97,8 @@ function Login() {
       isVerified: true,
       areasofInterest: data.areaOfInterest.map((area: any) => area.value),
       isPoc: true,
+      website: data.website,
+      department: data.department,
     };
     try {
       const response = await signUp(credentials).unwrap();
@@ -143,9 +148,9 @@ function Login() {
   return (
     <>
       <div className="h-full w-full ">
-        <div className="relative flex h-full  w-full  flex-col items-center md:flex-row">
-          <div className="relative flex h-full  w-full justify-center lg:w-[50%] overflow-scroll  no-scrollbar">
-            <div className="flex items-center justify-center lg:w-[55%]">
+        <div className="relative flex h-full  w-full  flex-col items-center md:flex-row justify-center">
+          <div className="relative flex h-full  w-full justify-center  overflow-scroll  no-scrollbar items-center max-w-[600px]">
+            <div className="flex items-center justify-center ">
               <div className="flex h-fit w-full flex-col gap-2">
                 <div className="text-heading3 text-black">Sign Up</div>
                 <div className="text-heading5 text-grey-50">
@@ -307,7 +312,44 @@ function Login() {
                       </div>
                     )}
                   />
-
+                  <TextFieldComponent
+                    label="department Name"
+                    type="string"
+                    name="department"
+                    placeholder="Enter your department name"
+                    control={form.control}
+                    error={form?.formState?.errors?.department?.message}
+                    endIcon={false}
+                    icon={
+                      <div className="absolute !z-[1000] h-[16px] p-[18px]">
+                        <Image
+                          src="/assets/name.svg"
+                          width={16}
+                          height={16}
+                          alt="name"
+                        />
+                      </div>
+                    }
+                  />
+                  <TextFieldComponent
+                    label="website"
+                    type="string"
+                    name="website"
+                    placeholder="Enter your website name"
+                    control={form.control}
+                    error={form?.formState?.errors?.website?.message}
+                    endIcon={false}
+                    icon={
+                      <div className="absolute !z-[1000] h-[16px] p-[18px]">
+                        <Image
+                          src="/assets/name.svg"
+                          width={16}
+                          height={16}
+                          alt="name"
+                        />
+                      </div>
+                    }
+                  />
                   <Controller
                     control={form.control}
                     name="areaOfInterest"
@@ -380,13 +422,13 @@ function Login() {
               </div>
             </div>
           </div>
-          <div className="relative  h-full  w-full justify-center lg:w-[50%] lg:h-screen hidden lg:flex">
+          {/* <div className="relative  h-full  w-full justify-center lg:w-[50%] lg:h-screen hidden lg:flex">
             <img
               src="/assets/banner.jpg"
               alt="login"
               className=" object-cover"
             />
-          </div>
+          </div> */}
         </div>
       </div>
     </>

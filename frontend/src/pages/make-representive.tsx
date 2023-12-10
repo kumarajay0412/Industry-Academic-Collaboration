@@ -16,24 +16,24 @@ import { Check } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   useGetUsersMutation,
+  useMakeRepresentativeMutation,
   useUnverifiedUsersQuery,
   useUserDetailsQuery,
   useVerifiedUsersQuery,
-  useVerifyUsersMutation,
 } from '@/store/auth';
 import { useDispatch } from '@/store/store';
 import { setStatus } from '@/store/toaster/slice';
 
 function Index() {
   const [data, setData] = useState<any>([]);
-  const [verifyUsers, { isLoading, error }] = useVerifyUsersMutation();
-  const [getUsers] = useGetUsersMutation();
-  const [users, setUsers] = useState<any>([]);
-  const [areaOfInterest, setAreaOfInterest] = useState([]);
-  const [role, setRole] = useState('');
-
+  const [selectAll, setSelectAll] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [role, setRole] = useState('');
+  const [makeRepresentative, { isLoading }] = useMakeRepresentativeMutation();
+  const [getUsers] = useGetUsersMutation();
+  const [areaOfInterest, setAreaOfInterest] = useState([]);
 
+  const [users, setUsers] = useState<any>([]);
   const updateUsers = async () => {
     const response = await getUsers({
       query: searchQuery,
@@ -47,22 +47,20 @@ function Index() {
     updateUsers();
   }, [searchQuery, role, areaOfInterest]);
 
-  const [selectAll, setSelectAll] = useState(false);
-  // Function to handle individual row selection
   const dispatch = useDispatch();
 
-  const handleVerifyMembers = async () => {
+  const handleInviteUser = async () => {
     const selectedUsers = data.filter((item: any) => item.selected);
     const selectedUserIds = selectedUsers.map((item: any) => item.userId);
     const credentials = {
       memberIds: selectedUserIds,
     };
-    const response = await verifyUsers(credentials).unwrap();
+    const response = await makeRepresentative(credentials).unwrap();
     if (response) {
       dispatch(
         setStatus({
           type: 'success',
-          message: 'members verified succesfully',
+          message: 'members converted to represenattive succesfully',
           timeout: 4000,
         })
       );
@@ -102,24 +100,26 @@ function Index() {
 
     setData(listData);
   }, [users]);
+
   return (
     <div>
       <Header />
       <div className=" space-y-6 p-10 pb-16 md:block">
         <div className="space-y-6">
           <div className="w-full flex justify-between">
-            <h3 className="text-lg font-medium">Verify Users</h3>
-            <Button onClick={() => handleVerifyMembers()} variant="destructive">
-              Verify Selected User
+            <h3 className="text-lg font-medium">Make Representative</h3>
+
+            <Button onClick={() => handleInviteUser()} variant="destructive">
+              Make Representative Selected User
             </Button>
           </div>
           <Separator />
         </div>
-        <Table className="max-w-[1300px] mt-11 border-t-2 ">
+        <Table className="max-w-[800px]">
+          <TableCaption>Make people Org Representative </TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead>
-                {' '}
+              <TableHead className="w-[100px]">
                 <Checkbox
                   checked={selectAll}
                   onCheckedChange={() => handleSelectAll()}
@@ -131,6 +131,7 @@ function Index() {
               <TableHead>Email</TableHead>
               <TableHead>Website</TableHead>
               <TableHead>Department</TableHead>
+              <TableHead className="text-right"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -142,7 +143,7 @@ function Index() {
                     onCheckedChange={() => handleRowSelect(index)}
                   />
                 </TableCell>
-                <TableCell className="font-medium">
+                <TableCell className="font-medium !w-[200px]">
                   {item?.firstName} {item?.lastName}
                 </TableCell>
                 <TableCell>{item.email}</TableCell>

@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useAddSuperviseeMutation, useGetUsersQuery } from '@/store/auth';
+import {
+  useAddSuperviseeMutation,
+  useGetAreaOfInterestQuery,
+  useGetUsersMutation,
+} from '@/store/auth';
 import Select from 'react-select';
 import { Button } from '@/components/ui/button';
 import { setStatus } from '@/store/toaster/slice';
@@ -24,69 +28,37 @@ enum Role {
   ACADEMIC_STUDENT = 'ACADEMIC_STUDENT',
 }
 function SearchUsers() {
-  const [data, setData] = useState<any>([]);
+  const [users, setUsers] = useState<any>([]);
   const [selectAll, setSelectAll] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [areaOfInterest, setAreaOfInterest] = useState([]);
   const [role, setRole] = useState('');
   const [inviteUsers, { isLoading }] = useAddSuperviseeMutation();
-  const { data: users } = useGetUsersQuery({
-    query: searchQuery,
-    type: role,
-  });
+  const [getUsers] = useGetUsersMutation();
   const dispatch = useDispatch();
+  const { data: areaOfInterestData } = useGetAreaOfInterestQuery({});
 
-  const handleInviteUser = async () => {
-    const selectedUsers = data.filter((item: any) => item.selected);
-    const selectedUserIds = selectedUsers.map((item: any) => item.userId);
-    const credentials = {
-      supervisees: selectedUserIds,
-    };
-    const response = await inviteUsers(credentials).unwrap();
-    if (response) {
-      dispatch(
-        setStatus({
-          type: 'success',
-          message: 'members invited successfully',
-          timeout: 4000,
-        })
-      );
-    } else {
-      dispatch(
-        setStatus({
-          type: 'error',
-          message:
-            response?.error?.data?.message || 'Request Failed Pls Try Again',
-          timeout: 4000,
-        })
-      );
-    }
-  };
-
-  const handleSelectAll = () => {
-    const updatedData = data?.map((item: any) => ({
-      ...item,
-      selected: !selectAll,
-    }));
-    setData(updatedData);
-    setSelectAll(!selectAll);
-  };
-
-  const handleRowSelect = (index: any) => {
-    const updatedData = [...data];
-    updatedData[index].selected = !updatedData[index].selected;
-    setSelectAll(updatedData.every((invoice) => invoice.selected));
-    setData(updatedData);
+  const updateUsers = async () => {
+    const response = await getUsers({
+      query: searchQuery,
+      type: role,
+      data: areaOfInterest,
+    }).unwrap();
+    setUsers(JSON.parse(response));
   };
 
   useEffect(() => {
-    const listData = users?.map((item: any) => ({
-      ...item,
-      selected: false,
-    }));
+    updateUsers();
+  }, [searchQuery, role, areaOfInterest]);
 
-    setData(listData);
-  }, [users]);
-
+  const handleAreaofInterestChange = (e: any) => {
+    const selectedAreaOfInterest = e?.map((item: any) => item.value);
+    setAreaOfInterest(selectedAreaOfInterest);
+  };
+  const selectOptionsAreaOfInterest = areaOfInterestData?.map((data: any) => ({
+    value: data.id, // Assuming you have an 'id' field
+    label: data.title,
+  }));
   return (
     <>
       <div>
@@ -102,7 +74,7 @@ function SearchUsers() {
           }}
         />
 
-        <div className="mt-4">
+        <div className="mt-4 flex flex-col gap-4">
           <Select
             options={[
               { label: 'Industry Rep', value: Role.INDUSTRY_REP },
@@ -114,50 +86,38 @@ function SearchUsers() {
             onChange={(e) => setRole(e?.value as string)}
             placeholder="Select Role"
           />
+          <Select
+            onChange={handleAreaofInterestChange}
+            isMulti
+            maxMenuHeight={150}
+            options={selectOptionsAreaOfInterest}
+            className="!w-full"
+          />
         </div>
-        <Button
-          onClick={() => handleInviteUser()}
-          variant="destructive"
-          className="w-full my-2"
-        >
-          Invite Selected Users
-        </Button>
       </div>
       <Table className="max-w-[1300px] mt-11 border-t-2 ">
         <TableHeader>
           <TableRow>
-            <TableHead>
-              {' '}
-              <Checkbox
-                checked={selectAll}
-                onCheckedChange={() => handleSelectAll()}
-                color="secondary"
-              />
-            </TableHead>
-
             <TableHead>User</TableHead>
             <TableHead>Email</TableHead>
+            <TableHead>organization</TableHead>
             <TableHead>Website</TableHead>
             <TableHead>Department</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data?.map((item: any, index: number) => (
-            <TableRow key={item.email}>
-              <TableCell className="font-medium">
-                <Checkbox
-                  checked={item.selected}
-                  onCheckedChange={() => handleRowSelect(index)}
-                />
-              </TableCell>
-              <TableCell className="font-medium">
-                {item?.firstName} {item?.lastName}
-              </TableCell>
-              <TableCell>{item.email}</TableCell>
-              <TableCell>{item.website}</TableCell>
-              <TableCell>{item.department}</TableCell>
-            </TableRow>
-          ))}
+          {users &&
+            users?.map((item: any, index: number) => (
+              <TableRow key={item.email}>
+                <TableCell className="font-medium">
+                  {item?.firstName} {item?.lastName}
+                </TableCell>
+                <TableCell>{item.email}</TableCell>
+                <TableCell>{item?.organization?.name}</TableCell>
+                <TableCell>{item.website}</TableCell>
+                <TableCell>{item.department}</TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </>

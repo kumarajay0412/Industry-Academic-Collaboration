@@ -2,7 +2,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { Type } from 'lucide-react';
 
-const baseUrl = 'http://localhost:5001'; // Define your base URL
+const baseUrl = 'https://industry-academic-collaboration-backend.onrender.com'; // Define your base URL
 const getAccessToken = () => {
   const accessToken = sessionStorage.getItem('accessToken');
   return accessToken ? `Bearer ${accessToken}` : '';
@@ -141,16 +141,50 @@ export const auth = createApi({
         method: 'GET',
       }),
     }),
-    getUsers: builder.query({
-      query: ({ query, type }) => ({
-        url: `/users?role=${type}&searchQuery=${query}`,
-        method: 'GET',
+    getUsers: builder.mutation({
+      query: ({ query, type, data }) => ({
+        url: `/users/search_users?role=${type}&searchQuery=${query}`,
+        method: 'POST',
+        body: { areasOfInterest: data },
+        responseHandler: async (response) => response.text(),
       }),
     }),
     addSupervisee: builder.mutation({
       query: (data) => ({
         url: '/users/add_supervisees',
         method: 'POST',
+        body: data,
+        responseHandler: async (response) => response.text(),
+      }),
+    }),
+    makeRepresentative: builder.mutation({
+      query: (data: any) => ({
+        url: `/users/make_representative`,
+        method: 'POST',
+        body: data,
+        responseHandler: async (response) => response.text(),
+      }),
+    }),
+    verifyUsers: builder.mutation({
+      query: (data: any) => ({
+        url: `/users/verify_user`,
+        method: 'POST',
+        body: data,
+        responseHandler: async (response) => response.text(),
+      }),
+    }),
+    inviteUser: builder.mutation({
+      query: (data: any) => ({
+        url: `/users/invite`,
+        method: 'POST',
+        body: data,
+        responseHandler: async (response) => response.text(),
+      }),
+    }),
+    editProfile: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/users/${id}`,
+        method: 'PATCH',
         body: data,
         responseHandler: async (response) => response.text(),
       }),
@@ -174,11 +208,14 @@ export const {
   useGetIndustryOrganisationQuery,
   useUnverifiedUsersQuery,
   useVerifiedUsersQuery,
-  useVerifyMembersMutation,
   useAddAreaOfInterestMutation,
   useGetAreaOfInterestQuery,
   useGetOrganisationQuery,
   useCreateSuperviseMutation,
-  useGetUsersQuery,
+  useGetUsersMutation,
   useAddSuperviseeMutation,
+  useMakeRepresentativeMutation,
+  useVerifyUsersMutation,
+  useInviteUserMutation,
+  useEditProfileMutation,
 } = auth as AuthApi;
