@@ -1,12 +1,12 @@
-import Header from "@/components/Header";
-import { Badge } from "@/components/ui/badge";
+import Header from '@/components/Header';
+import { Badge } from '@/components/ui/badge';
 import {
   Card,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -15,24 +15,53 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
-import { useGetProjectQuery } from "@/store/auth";
-import { Skeleton } from "@mui/material";
-import { useRouter } from "next/router";
-import React from "react";
-import { Button } from "@/components/ui/button";
+import { useEditProjectMutation, useGetProjectQuery } from '@/store/auth';
+import { Skeleton } from '@mui/material';
+import { useRouter } from 'next/router';
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { setStatus } from '@/store/toaster/slice';
+import { useDispatch } from '@/store/store';
 
 function Project() {
   const router = useRouter();
   const { query } = router;
   const { data: projectData, isLoading } = useGetProjectQuery(query.id);
+  const [editProject, { isLoading: isEditLoading }] = useEditProjectMutation();
   const showProgressUpdates = projectData && projectData.progressUpdates.length;
   const showIndustryUsers = projectData && projectData.industryUsers.length;
+  const [updateStatus, setUpdateStatus] = React.useState('');
+  const dispatch = useDispatch();
+
+  const handleEditProject = async () => {
+    const response = await editProject({
+      progressUpdates: projectData.progressUpdates.concat(updateStatus),
+    });
+
+    if (response instanceof Error) {
+      dispatch(
+        setStatus({
+          type: 'error',
+          message: 'Request Failed Pls Try Again',
+          timeout: 4000,
+        })
+      );
+    } else {
+      dispatch(
+        setStatus({
+          type: 'success',
+          message: 'Project Updated Successfully',
+          timeout: 4000,
+        })
+      );
+    }
+  };
   return (
     <>
       <Header />
@@ -72,11 +101,25 @@ function Project() {
                   </DialogHeader>
 
                   <div className="flex flex-col">
-                    <Textarea placeholder="Text goes here" rows={5} />
+                    <Textarea
+                      value={updateStatus}
+                      onChange={(e) => {
+                        setUpdateStatus(e.target.value);
+                      }}
+                      placeholder="Text goes here"
+                      rows={5}
+                    />
                   </div>
 
                   <DialogFooter>
-                    <Button type="submit">Save changes</Button>
+                    <Button
+                      onClick={() => {
+                        handleEditProject();
+                      }}
+                      type="submit"
+                    >
+                      Save changes
+                    </Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
@@ -96,7 +139,7 @@ function Project() {
                   <Badge
                     key={aoi.title}
                     style={{
-                      background: "gray",
+                      background: 'gray',
                     }}
                   >
                     {aoi.title}
