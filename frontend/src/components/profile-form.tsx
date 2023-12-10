@@ -61,6 +61,14 @@ export function ProfileForm() {
         <Label htmlFor="terms">Organization Type</Label>
         <div className="  text-lg">{data?.organization?.type}</div>
       </div>
+      <div>
+        <Label htmlFor="terms">Area of Interest </Label>
+        <div className="  text-lg">
+          {data?.areaOfInterest?.map((item: any) => {
+            return item.title + ', ';
+          })}
+        </div>
+      </div>
     </div>
   );
 }

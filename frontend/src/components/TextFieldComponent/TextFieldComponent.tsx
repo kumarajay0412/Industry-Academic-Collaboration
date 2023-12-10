@@ -47,8 +47,6 @@ function TextFieldComponent({
           name={name}
           render={({ field }) => (
             <div className="relative block ">
-              {/* {icon} */}
-
               <Input
                 {...field}
                 readOnly={disabled}

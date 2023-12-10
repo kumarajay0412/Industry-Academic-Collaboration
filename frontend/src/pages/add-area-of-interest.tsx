@@ -36,7 +36,6 @@ function AddOrganisation() {
   const form = useForm({
     resolver: yupResolver(validationSchema),
   });
-  console.log(data);
   const onSubmit = async (data: any) => {
     const credentials = {
       title: data.title,

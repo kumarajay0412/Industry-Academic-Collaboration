@@ -52,7 +52,11 @@ function Profile() {
     setValue('lastName', data?.lastName);
     setValue('website', data?.website);
     setValue('department', data?.department);
-    setValue('areaOfInterest', data?.areaOfInterest);
+    const areaOfInterest = data?.areaOfInterest?.map((item: any) => ({
+      value: item.id,
+      label: item.title,
+    }));
+    setValue('areaOfInterest', areaOfInterest);
   }, [data]);
 
   const onSubmit = async (data1: any) => {

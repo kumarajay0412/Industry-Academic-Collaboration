@@ -189,6 +189,36 @@ export const auth = createApi({
         responseHandler: async (response) => response.text(),
       }),
     }),
+    createDraftProject: builder.mutation({
+      query: (data) => ({
+        url: `/project/createDraft`,
+        method: 'POST',
+        body: data,
+        responseHandler: async (response) => response.text(),
+      }),
+    }),
+    sendVerificationProject: builder.mutation({
+      query: (data) => ({
+        url: `/project/sendVerificationRequest`,
+        method: 'POST',
+        body: data,
+        responseHandler: async (response) => response.text(),
+      }),
+    }),
+    projectVerify: builder.mutation({
+      query: (data) => ({
+        url: `/project/verify`,
+        method: 'POST',
+        body: data,
+        responseHandler: async (response) => response.text(),
+      }),
+    }),
+    potentialCollaborators: builder.query({
+      query: ({ id }) => ({
+        url: `/users/potential_collaborators/${id}`,
+        method: 'GET',
+      }),
+    }),
   }),
 });
 
@@ -218,4 +248,8 @@ export const {
   useVerifyUsersMutation,
   useInviteUserMutation,
   useEditProfileMutation,
+  useCreateDraftProjectMutation,
+  useSendVerificationProjectMutation,
+  useProjectVerifyMutation,
+  usePotentialCollaboratorsQuery,
 } = auth as AuthApi;

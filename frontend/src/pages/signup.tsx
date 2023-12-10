@@ -84,7 +84,6 @@ function Login() {
   const { data: areaOfInterestData } = useGetAreaOfInterestQuery({});
 
   const onSubmit = async (data: any) => {
-    console.log(data);
     const credentials = {
       email: data.email,
       firstName: data.firstName,

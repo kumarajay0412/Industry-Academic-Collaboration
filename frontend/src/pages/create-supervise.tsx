@@ -26,7 +26,11 @@ import Header from '@/components/Header';
 import { Separator } from '@/components/ui/separator';
 import SearchUsers from '@/molecules/SearchUsers';
 import SearchUsersStudents from '@/molecules/SearchUsersStudents';
+import { Calendar } from '@/components/ui/calendar';
+
 function CreateSupervise() {
+  const [date, setDate] = React.useState<Date | undefined>(new Date());
+
   const validationSchema = yup.object().shape({
     email: yup
       .string()

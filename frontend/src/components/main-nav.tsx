@@ -8,7 +8,6 @@ export function MainNav({
   ...props
 }: React.HTMLAttributes<HTMLElement>) {
   const { data } = useUserDetailsQuery({});
-  console.log(data);
   return (
     <nav
       className={cn('flex items-center space-x-4 lg:space-x-6', className)}

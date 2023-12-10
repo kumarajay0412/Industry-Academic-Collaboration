@@ -40,7 +40,6 @@ export function RouteGuard({ children }: RouteGuardProps) {
     const path = url.split('?')[0];
     const getAcessToken = sessionStorage.getItem('accessToken');
     const isAuthenticated = getAcessToken ? true : false;
-    console.log(isAuthenticated);
 
     if (!isAuthenticated && !publicPaths.includes(path)) {
       setAuthorized(false);
