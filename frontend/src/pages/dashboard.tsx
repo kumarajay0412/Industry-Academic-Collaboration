@@ -16,7 +16,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-function dashboard() {
+function Dashboard() {
   const { data: user } = useUserDetailsQuery({});
   const { data } = usePotentialCollaboratorsQuery({ id: user?.userId });
   console.log(data);
@@ -33,9 +33,7 @@ function dashboard() {
           return (
             <Card>
               <CardHeader>
-                <CardTitle>
-                  Name : {item?.firstName + ' ' + item?.lastName}
-                </CardTitle>
+                <CardTitle>{item?.firstName + ' ' + item?.lastName}</CardTitle>
                 <CardDescription>email : {item?.email}</CardDescription>
                 <CardDescription>Website : {item?.website}</CardDescription>
                 <CardDescription>
@@ -51,12 +49,6 @@ function dashboard() {
                   })}
                 </CardDescription>
               </CardHeader>
-              {/* <CardContent>
-                <p>Card Content</p>
-              </CardContent>
-              <CardFooter>
-                <p>Card Footer</p>
-              </CardFooter> */}
             </Card>
           );
         })}
@@ -65,4 +57,4 @@ function dashboard() {
   );
 }
 
-export default dashboard;
+export default Dashboard;
