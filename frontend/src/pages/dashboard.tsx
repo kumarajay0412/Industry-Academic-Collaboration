@@ -27,12 +27,12 @@ function Dashboard() {
     <div>
       <Header />
 
-      <div className="flex w-full">
-        <div className="w-[50%] ">
+      <div className="flex w-full flex-col">
+        <div className="w-full ">
           <div className="p-3">
             <h3 className="text-lg font-medium">Projects</h3>
           </div>
-          <div className=" grid grid-cols-2 gap-4 mt-4 p-4 ">
+          <div className=" grid grid-cols-3 gap-4 mt-4 p-4 ">
             {projectList?.map((item: any) => {
               return (
                 <Card key={item?.id}>
@@ -55,11 +55,11 @@ function Dashboard() {
             })}
           </div>
         </div>
-        <div className="w-[50%] ">
+        <div className="w-full ">
           <div className="p-3">
             <h3 className="text-lg font-medium">Potential collaborators</h3>
           </div>
-          <div className=" grid grid-cols-2 gap-4 mt-4 p-4 ">
+          <div className=" grid grid-cols-3 gap-4 mt-4 p-4 ">
             {data?.map((item: any) => {
               return (
                 <Card key={item?.userId}>
