@@ -219,6 +219,12 @@ export const auth = createApi({
         method: 'GET',
       }),
     }),
+    getProjectList: builder.query({
+      query: () => ({
+        url: `/project`,
+        method: 'GET',
+      }),
+    }),
   }),
 });
 
@@ -252,4 +258,5 @@ export const {
   useSendVerificationProjectMutation,
   useProjectVerifyMutation,
   usePotentialCollaboratorsQuery,
+  useGetProjectListQuery,
 } = auth as AuthApi;
