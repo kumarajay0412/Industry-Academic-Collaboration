@@ -1,12 +1,12 @@
-import Header from '@/components/Header';
-import { Badge } from '@/components/ui/badge';
+import Header from "@/components/Header";
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -15,53 +15,27 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
-import { useEditProjectMutation, useGetProjectQuery } from '@/store/auth';
-import { Skeleton } from '@mui/material';
-import { useRouter } from 'next/router';
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { setStatus } from '@/store/toaster/slice';
-import { useDispatch } from '@/store/store';
+import { useGetProjectQuery } from "@/store/auth";
+import { Skeleton } from "@mui/material";
+import { useRouter } from "next/router";
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { useForm } from "react-hook-form";
 
 function Project() {
   const router = useRouter();
   const { query } = router;
   const { data: projectData, isLoading } = useGetProjectQuery(query.id);
-  const [editProject, { isLoading: isEditLoading }] = useEditProjectMutation();
   const showProgressUpdates = projectData && projectData.progressUpdates.length;
   const showIndustryUsers = projectData && projectData.industryUsers.length;
-  const [updateStatus, setUpdateStatus] = React.useState('');
-  const dispatch = useDispatch();
-
-  const handleEditProject = async () => {
-    const response = await editProject({
-      progressUpdates: projectData.progressUpdates.concat(updateStatus),
-    });
-
-    if (response instanceof Error) {
-      dispatch(
-        setStatus({
-          type: 'error',
-          message: 'Request Failed Pls Try Again',
-          timeout: 4000,
-        })
-      );
-    } else {
-      dispatch(
-        setStatus({
-          type: 'success',
-          message: 'Project Updated Successfully',
-          timeout: 4000,
-        })
-      );
-    }
-  };
+  const showAreasOfInterest = projectData && projectData.areaOfInterest.length;
+  const { register } = useForm();
   return (
     <>
       <Header />
@@ -102,24 +76,14 @@ function Project() {
 
                   <div className="flex flex-col">
                     <Textarea
-                      value={updateStatus}
-                      onChange={(e) => {
-                        setUpdateStatus(e.target.value);
-                      }}
                       placeholder="Text goes here"
                       rows={5}
+                      {...register("update")}
                     />
                   </div>
 
                   <DialogFooter>
-                    <Button
-                      onClick={() => {
-                        handleEditProject();
-                      }}
-                      type="submit"
-                    >
-                      Save changes
-                    </Button>
+                    <Button type="submit">Save changes</Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
@@ -130,23 +94,27 @@ function Project() {
             <div className="text-heading5 text-black mt-4">
               {projectData.summary}
             </div>
-            <div className="flex flex-wrap">
-              <div className="text-heading5 text-black mt-4">
-                Areas of Interest:
+
+            {showAreasOfInterest ? (
+              <div className="flex items-center mt-8">
+                <span className="text-black">Areas of Interest:</span>
+                {projectData.areaOfInterest?.map((aoi: { title: string }) => {
+                  return (
+                    <div className="mx-2" key={aoi.title}>
+                      <Badge
+                        style={{
+                          border: "1px solid black",
+                          padding: "8px 12px",
+                        }}
+                      >
+                        {aoi.title}
+                      </Badge>
+                    </div>
+                  );
+                })}
               </div>
-              {projectData.areaOfInterest?.map((aoi: { title: string }) => {
-                return (
-                  <Badge
-                    key={aoi.title}
-                    style={{
-                      background: 'gray',
-                    }}
-                  >
-                    {aoi.title}
-                  </Badge>
-                );
-              })}
-            </div>
+            ) : null}
+
             <div className="mt-6">
               <div className="text-heading4 text-black mt-4">
                 Affiliated Organization
