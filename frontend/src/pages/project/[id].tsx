@@ -110,12 +110,21 @@ function Project() {
                     <Textarea
                       placeholder="Text goes here"
                       rows={5}
-                      {...register('update')}
+                      onChange={(e) => {
+                        setUpdateStatus(e.target.value);
+                      }}
                     />
                   </div>
 
                   <DialogFooter>
-                    <Button type="submit">Save changes</Button>
+                    <Button
+                      type="submit"
+                      onClick={() => {
+                        handleEditProject();
+                      }}
+                    >
+                      Save changes
+                    </Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
