@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Check } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
+  useGetUnVerifiedUsersQuery,
   useGetUsersMutation,
   useUnverifiedUsersQuery,
   useUserDetailsQuery,
@@ -23,29 +24,30 @@ import {
 } from '@/store/auth';
 import { useDispatch } from '@/store/store';
 import { setStatus } from '@/store/toaster/slice';
+import CircularProgress from '@mui/material/CircularProgress';
 
 function Index() {
   const [data, setData] = useState<any>([]);
   const [verifyUsers, { isLoading, error }] = useVerifyUsersMutation();
-  const [getUsers] = useGetUsersMutation();
+  // const [getUsers] = useGetUsersMutation();
   const [users, setUsers] = useState<any>([]);
   const [areaOfInterest, setAreaOfInterest] = useState([]);
   const [role, setRole] = useState('');
-
+  const { data: unverifiedUsers } = useGetUnVerifiedUsersQuery({});
   const [searchQuery, setSearchQuery] = useState('');
 
-  const updateUsers = async () => {
-    const response = await getUsers({
-      query: searchQuery,
-      type: role,
-      data: areaOfInterest,
-    }).unwrap();
-    setUsers(JSON.parse(response));
-  };
+  // const updateUsers = async () => {
+  //   const response = await getUsers({
+  //     query: searchQuery,
+  //     type: role,
+  //     data: areaOfInterest,
+  //   }).unwrap();
+  //   setUsers(JSON.parse(response));
+  // };
 
-  useEffect(() => {
-    updateUsers();
-  }, [searchQuery, role, areaOfInterest]);
+  // useEffect(() => {
+  //   updateUsers();
+  // }, [searchQuery, role, areaOfInterest]);
 
   const [selectAll, setSelectAll] = useState(false);
   // Function to handle individual row selection
@@ -95,13 +97,16 @@ function Index() {
   };
 
   useEffect(() => {
-    const listData = users?.map((item: any) => ({
-      ...item,
-      selected: false,
-    }));
+    if (unverifiedUsers) {
+      const jsonData = JSON.parse(unverifiedUsers);
+      const listData = jsonData?.map((item: any) => ({
+        ...item,
+        selected: false,
+      }));
 
-    setData(listData);
-  }, [users]);
+      setData(listData);
+    }
+  }, [unverifiedUsers]);
   return (
     <div>
       <Header />
@@ -133,24 +138,30 @@ function Index() {
               <TableHead>Department</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
-            {data?.map((item: any, index: number) => (
-              <TableRow key={item.email}>
-                <TableCell className="font-medium">
-                  <Checkbox
-                    checked={item.selected}
-                    onCheckedChange={() => handleRowSelect(index)}
-                  />
-                </TableCell>
-                <TableCell className="font-medium">
-                  {item?.firstName} {item?.lastName}
-                </TableCell>
-                <TableCell>{item.email}</TableCell>
-                <TableCell>{item.website}</TableCell>
-                <TableCell>{item.department}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
+          {data && data.length === 0 ? (
+            <div className="w-full min-h-[300px] flex justify-center items-center">
+              <CircularProgress size={26} style={{ color: '#333333' }} />
+            </div>
+          ) : (
+            <TableBody>
+              {data?.map((item: any, index: number) => (
+                <TableRow key={item.email}>
+                  <TableCell className="font-medium">
+                    <Checkbox
+                      checked={item.selected}
+                      onCheckedChange={() => handleRowSelect(index)}
+                    />
+                  </TableCell>
+                  <TableCell className="font-medium">
+                    {item?.firstName} {item?.lastName}
+                  </TableCell>
+                  <TableCell>{item.email}</TableCell>
+                  <TableCell>{item.website}</TableCell>
+                  <TableCell>{item.department}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          )}
         </Table>
       </div>
     </div>

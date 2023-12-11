@@ -19,10 +19,14 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/router';
+import CircularProgress from '@mui/material/CircularProgress';
 function Dashboard() {
   const { data: user } = useUserDetailsQuery({});
-  const { data } = usePotentialCollaboratorsQuery({ id: user?.userId });
-  const { data: projectList } = useGetProjectListQuery({});
+  const { data, isLoading } = usePotentialCollaboratorsQuery({
+    id: user?.userId,
+  });
+  const { data: projectList, isLoading: projectListLoading } =
+    useGetProjectListQuery({});
   const router = useRouter();
   return (
     <div>
@@ -33,67 +37,84 @@ function Dashboard() {
           <div className="p-3">
             <h3 className="text-lg font-medium">Projects</h3>
           </div>
-          <div className=" grid grid-cols-3 gap-4 mt-4 p-4 ">
-            {projectList?.map((item: any) => {
-              return (
-                <Card key={item?.id}>
-                  <CardHeader>
-                    <CardTitle>{item?.title}</CardTitle>
-                    <CardDescription>Status : {item?.status}</CardDescription>
-                    <CardDescription>Website : {item?.website}</CardDescription>
-                    <CardDescription>
-                      Industry Organisation : {item?.industryOrg?.name}
-                    </CardDescription>
-                    <CardDescription>
-                      Academic Organisation : {item?.academicOrg?.name}
-                    </CardDescription>
-                    <CardDescription>
-                      <Button
-                        onClick={() => {
-                          router.push(`/project/${item?.id}`);
-                        }}
-                        variant="destructive"
-                      >
-                        View Project
-                      </Button>
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
-              );
-            })}
-          </div>
+
+          {isLoading ? (
+            <div className="w-full min-h-[300px] flex justify-center items-center">
+              <CircularProgress size={26} style={{ color: '#333333' }} />
+            </div>
+          ) : (
+            <div className=" grid grid-cols-3 gap-4 mt-4 p-4 ">
+              {projectList?.map((item: any) => {
+                return (
+                  <Card key={item?.id}>
+                    <CardHeader>
+                      <CardTitle>{item?.title}</CardTitle>
+                      <CardDescription>Status : {item?.status}</CardDescription>
+                      <CardDescription>
+                        Website : {item?.website}
+                      </CardDescription>
+                      <CardDescription>
+                        Industry Organisation : {item?.industryOrg?.name}
+                      </CardDescription>
+                      <CardDescription>
+                        Academic Organisation : {item?.academicOrg?.name}
+                      </CardDescription>
+                      <CardDescription>
+                        <Button
+                          onClick={() => {
+                            router.push(`/project/${item?.id}`);
+                          }}
+                          variant="destructive"
+                        >
+                          View Project
+                        </Button>
+                      </CardDescription>
+                    </CardHeader>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
         </div>
         <div className="w-full ">
           <div className="p-3">
             <h3 className="text-lg font-medium">Potential collaborators</h3>
           </div>
-          <div className=" grid grid-cols-3 gap-4 mt-4 p-4 ">
-            {data?.map((item: any) => {
-              return (
-                <Card key={item?.userId}>
-                  <CardHeader>
-                    <CardTitle>
-                      {item?.firstName + ' ' + item?.lastName}
-                    </CardTitle>
-                    <CardDescription>email : {item?.email}</CardDescription>
-                    <CardDescription>Website : {item?.website}</CardDescription>
-                    <CardDescription>
-                      Department : {item?.department}
-                    </CardDescription>
-                    <CardDescription>
-                      Organisation : {item?.organization?.name}
-                    </CardDescription>
-                    <CardDescription>
-                      Area of Interest :{' '}
-                      {item?.areaOfInterest?.map((item: any) => {
-                        return item.title + ', ';
-                      })}
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
-              );
-            })}
-          </div>
+          {projectListLoading ? (
+            <div className="w-full min-h-[300px] flex justify-center items-center">
+              <CircularProgress size={26} style={{ color: '#333333' }} />
+            </div>
+          ) : (
+            <div className=" grid grid-cols-3 gap-4 mt-4 p-4 ">
+              {data?.map((item: any) => {
+                return (
+                  <Card key={item?.userId}>
+                    <CardHeader>
+                      <CardTitle>
+                        {item?.firstName + ' ' + item?.lastName}
+                      </CardTitle>
+                      <CardDescription>email : {item?.email}</CardDescription>
+                      <CardDescription>
+                        Website : {item?.website}
+                      </CardDescription>
+                      <CardDescription>
+                        Department : {item?.department}
+                      </CardDescription>
+                      <CardDescription>
+                        Organisation : {item?.organization?.name}
+                      </CardDescription>
+                      <CardDescription>
+                        Area of Interest :{' '}
+                        {item?.areaOfInterest?.map((item: any) => {
+                          return item.title + ', ';
+                        })}
+                      </CardDescription>
+                    </CardHeader>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
     </div>

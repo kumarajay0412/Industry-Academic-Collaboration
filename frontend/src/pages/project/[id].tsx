@@ -1,12 +1,12 @@
-import Header from "@/components/Header";
-import { Badge } from "@/components/ui/badge";
+import Header from '@/components/Header';
+import { Badge } from '@/components/ui/badge';
 import {
   Card,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -15,18 +15,20 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
-import { useGetProjectQuery } from "@/store/auth";
-import { Skeleton } from "@mui/material";
-import { useRouter } from "next/router";
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { useForm } from "react-hook-form";
+import { useEditProjectMutation, useGetProjectQuery } from '@/store/auth';
+import { Skeleton } from '@mui/material';
+import { useRouter } from 'next/router';
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { useForm } from 'react-hook-form';
+import { setStatus } from '@/store/toaster/slice';
+import { useDispatch } from '@/store/store';
 
 function Project() {
   const router = useRouter();
@@ -36,6 +38,35 @@ function Project() {
   const showIndustryUsers = projectData && projectData.industryUsers.length;
   const showAreasOfInterest = projectData && projectData.areaOfInterest.length;
   const { register } = useForm();
+  const [updateStatus, setUpdateStatus] = React.useState('');
+  const dispatch = useDispatch();
+  const [editProject] = useEditProjectMutation();
+  const handleEditProject = async () => {
+    const response = await editProject({
+      id: projectData.id,
+      data: {
+        progressUpdates: [...projectData.progressUpdates, updateStatus],
+      },
+    });
+
+    if (response instanceof Error) {
+      dispatch(
+        setStatus({
+          type: 'error',
+          message: 'Request Failed Pls Try Again',
+          timeout: 4000,
+        })
+      );
+    } else {
+      dispatch(
+        setStatus({
+          type: 'success',
+          message: 'Project Updated Successfully',
+          timeout: 4000,
+        })
+      );
+    }
+  };
   return (
     <>
       <Header />
@@ -60,7 +91,8 @@ function Project() {
           <>
             <div className=" flex w-full justify-between">
               <span className="text-heading2 text-black">
-                {projectData.title}
+                {projectData.title} <br />
+                <div className="text-[16px]">Status : {projectData.status}</div>
               </span>
               <Dialog>
                 <DialogTrigger asChild>
@@ -78,7 +110,7 @@ function Project() {
                     <Textarea
                       placeholder="Text goes here"
                       rows={5}
-                      {...register("update")}
+                      {...register('update')}
                     />
                   </div>
 
@@ -103,8 +135,8 @@ function Project() {
                     <div className="mx-2" key={aoi.title}>
                       <Badge
                         style={{
-                          border: "1px solid black",
-                          padding: "8px 12px",
+                          border: '1px solid black',
+                          padding: '8px 12px',
                         }}
                       >
                         {aoi.title}
